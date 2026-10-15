@@ -17,10 +17,9 @@ This repo is the end-to-end answer: a mandatory vs optional checklist, copy-past
 `AGENTS.md` holds the commands, refusals, and review rules. Cursor, Codex, and VS Code read it directly. Claude Code reads it through `CLAUDE.md`. Gemini CLI reads it when `context.fileName` includes `AGENTS.md`.
 
 ```mermaid
-%%{init: {'theme': 'base', 'flowchart': {'htmlLabels': false, 'curve': 'step', 'padding': 18, 'nodeSpacing': 28, 'rankSpacing': 40}, 'themeVariables': {'fontFamily': 'arial', 'fontSize': '15px', 'lineColor': '#5C6B7A', 'textColor': '#1C2833', 'primaryColor': '#F7F8FA', 'primaryTextColor': '#1C2833', 'primaryBorderColor': '#1B3A4B', 'clusterBkg': '#F7F8FA', 'clusterBorder': '#D5DCE3', 'edgeLabelBackground': '#FFFFFF'}}}%%
 flowchart TB
   accTitle: One source of truth, thin shims
-  accDescr: Cursor, Codex, and VS Code read AGENTS.md directly. Claude Code reads it through CLAUDE.md, and Gemini CLI through .gemini/settings.json. Navy is the source file. Blue is a shim.
+  accDescr: AGENTS.md is the source. Cursor, Codex, and VS Code read it directly. Claude Code reads it through CLAUDE.md, and Gemini CLI through .gemini/settings.json.
 
   agents("AGENTS.md")
 
@@ -28,9 +27,8 @@ flowchart TB
     direction LR
     cursor("Cursor")
     codex("Codex")
-    copilot("VS Code / Copilot")
-    cursor ~~~ codex
-    codex ~~~ copilot
+    copilot("VS Code")
+    cursor ~~~ codex ~~~ copilot
   end
 
   subgraph via["Read through a shim"]
@@ -42,52 +40,48 @@ flowchart TB
   agents --> direct
   agents --> via
 
+  classDef source fill:#0969DA,stroke:#0969DA,color:#FFFFFF
+  classDef shim fill:#8250DF,stroke:#8250DF,color:#FFFFFF
+  classDef agent fill:#59636E,stroke:#59636E,color:#FFFFFF
+  classDef group fill:transparent,stroke:#6E7781,stroke-dasharray:4 4,color:#6E7781
+
   class agents source
   class claudeShim,geminiShim shim
   class cursor,codex,copilot,claude,gemini agent
-
-  classDef source fill:#1B3A4B,stroke:#1B3A4B,color:#FFFFFF
-  classDef shim fill:#E6EEF5,stroke:#1B3A4B,color:#1B3A4B
-  classDef agent fill:#F7F8FA,stroke:#5C6B7A,color:#1C2833
-
-  style direct fill:#F7F8FA,stroke:#D5DCE3,color:#1B3A4B
-  style via fill:#F7F8FA,stroke:#D5DCE3,color:#1B3A4B
+  class direct,via group
 ```
 
-Navy is the source of truth. Blue is a shim. Gray is an agent.
+Blue is the source of truth. Purple is a shim. Gray is an agent.
 
 ## How to use this repo
 
 Audit the product repo, add the mandatory files, and run the acceptance test on every agent in use. Fix and re-test until it passes, then stop. Add an optional layer only when its trigger fires, and test again. The checklist's [apply order](docs/repo-config-checklist.md#apply-order) is this flow.
 
 ```mermaid
-%%{init: {'theme': 'base', 'flowchart': {'htmlLabels': false, 'curve': 'basis', 'padding': 18, 'nodeSpacing': 48, 'rankSpacing': 48}, 'themeVariables': {'fontFamily': 'arial', 'fontSize': '15px', 'lineColor': '#5C6B7A', 'textColor': '#1C2833', 'primaryColor': '#F7F8FA', 'primaryTextColor': '#1C2833', 'primaryBorderColor': '#1B3A4B', 'edgeLabelBackground': '#FFFFFF'}}}%%
-flowchart TD
+flowchart LR
   accTitle: How to apply the checklist
-  accDescr: Audit, write AGENTS.md and the gitignore, add shims, then test on every agent. A no result fixes AGENTS.md or the shim and tests again. A yes result stops. A dashed line adds one optional layer only after a trigger fires.
+  accDescr: Audit, write AGENTS.md and the gitignore, add the shims, then test on every agent. A no result fixes AGENTS.md or the shim and tests again. A yes result stops. A dashed line adds one optional layer only after a trigger fires.
 
-  audit("Audit the repo") --> setup("AGENTS.md and gitignore")
-  setup --> shims("Add the shims")
-  shims --> test{"Passes on every agent?"}
+  audit("Audit<br/>the repo") --> setup("AGENTS.md<br/>and gitignore") --> shims("Add<br/>the shims") --> test{"Passes on<br/>every agent?"}
   test -->|Yes| stop(["Stop"])
-  stop -.->|A trigger fires| layer("Add one optional layer")
-  test -->|No| fix("Fix AGENTS.md or the shim")
+  stop -.->|A trigger fires| layer("Add one<br/>optional layer")
+  test -->|No| fix("Fix AGENTS.md<br/>or the shim")
   fix -->|Re-test| test
 
-  class audit,setup,shims step
-  class test decision
-  class fix rework
-  class stop terminal
-  class layer later
+  classDef step fill:#0969DA,stroke:#0969DA,color:#FFFFFF
+  classDef check fill:#9A6700,stroke:#9A6700,color:#FFFFFF
+  classDef done fill:#1F883D,stroke:#1F883D,color:#FFFFFF
+  classDef rework fill:#CF222E,stroke:#CF222E,color:#FFFFFF
+  classDef later fill:#59636E,stroke:#59636E,color:#FFFFFF,stroke-dasharray:5 4
 
-  classDef step fill:#F7F8FA,stroke:#1B3A4B,color:#1C2833
-  classDef decision fill:#F4F0E6,stroke:#6F6248,color:#1C2833
-  classDef rework fill:#F6F0ED,stroke:#7A4E45,color:#1C2833
-  classDef terminal fill:#1B3A4B,stroke:#1B3A4B,color:#FFFFFF
-  classDef later fill:#E6EEF5,stroke:#1B3A4B,color:#1B3A4B
+  class audit,setup,shims step
+  class test check
+  class stop done
+  class fix rework
+  class layer later
 ```
 
-Solid lines are the required path. Stone is the decision. Clay is rework. The dashed line runs only after a trigger fires, and that layer is tested again.
+Blue is the required path. Amber is the check, red is rework, and green is done. The dashed line runs only after a trigger fires, and that layer is tested again.
 
 ## What's in this repo
 
