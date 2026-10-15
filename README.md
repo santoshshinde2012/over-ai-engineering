@@ -23,6 +23,12 @@ flowchart TB
 
   agents("AGENTS.md")
 
+  subgraph via["Read through a shim"]
+    direction LR
+    claudeShim("CLAUDE.md") --> claude("Claude Code")
+    geminiShim(".gemini/settings.json") --> gemini("Gemini CLI")
+  end
+
   subgraph direct["Read directly"]
     direction LR
     cursor("Cursor")
@@ -31,14 +37,8 @@ flowchart TB
     cursor ~~~ codex ~~~ copilot
   end
 
-  subgraph via["Read through a shim"]
-    direction LR
-    claudeShim("CLAUDE.md") --> claude("Claude Code")
-    geminiShim(".gemini/settings.json") --> gemini("Gemini CLI")
-  end
-
-  agents --> direct
   agents --> via
+  agents --> direct
 
   classDef source fill:#0969DA,stroke:#0969DA,color:#FFFFFF
   classDef shim fill:#8250DF,stroke:#8250DF,color:#FFFFFF
