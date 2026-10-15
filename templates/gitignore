@@ -1,0 +1,10 @@
+# Append to the product repo's .gitignore.
+
+# Personal agent files
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Secrets
+.env
+.env.*
+!.env.example
