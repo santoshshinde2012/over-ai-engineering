@@ -58,30 +58,37 @@ Blue is the source of truth. Purple is a shim. Gray is an agent.
 Audit the product repo, add the mandatory files, and run the acceptance test on every agent in use. Fix and re-test until it passes, then stop. Add an optional layer only when its trigger fires, and test again. The checklist's [apply order](docs/repo-config-checklist.md#apply-order) is this flow.
 
 ```mermaid
-flowchart LR
+flowchart TB
   accTitle: How to apply the checklist
   accDescr: Audit, write AGENTS.md and the gitignore, add the shims, then test on every agent. A no result fixes AGENTS.md or the shim and tests again. A yes result stops. A dashed line adds one optional layer only after a trigger fires.
 
-  audit("Audit<br/>the repo") --> setup("AGENTS.md<br/>and gitignore") --> shims("Add<br/>the shims") --> test{"Passes on<br/>every agent?"}
+  subgraph mandatory["Mandatory set"]
+    direction LR
+    audit("Audit the repo") --> setup("AGENTS.md<br/>and gitignore") --> shims("Add the shims")
+  end
+
+  mandatory --> test{"Passes on<br/>every agent?"}
   test -->|Yes| stop(["Stop"])
-  stop -.->|A trigger fires| layer("Add one<br/>optional layer")
   test -->|No| fix("Fix AGENTS.md<br/>or the shim")
   fix -->|Re-test| test
+  stop -.->|A trigger fires| layer("Add one<br/>optional layer")
 
   classDef step fill:#0969DA,stroke:#0969DA,color:#FFFFFF
   classDef check fill:#9A6700,stroke:#9A6700,color:#FFFFFF
   classDef done fill:#1F883D,stroke:#1F883D,color:#FFFFFF
   classDef rework fill:#CF222E,stroke:#CF222E,color:#FFFFFF
   classDef later fill:#59636E,stroke:#59636E,color:#FFFFFF,stroke-dasharray:5 4
+  classDef group fill:transparent,stroke:#6E7781,stroke-dasharray:4 4,color:#6E7781
 
   class audit,setup,shims step
   class test check
   class stop done
   class fix rework
   class layer later
+  class mandatory group
 ```
 
-Blue is the required path. Amber is the check, red is rework, and green is done. The dashed line runs only after a trigger fires, and that layer is tested again.
+Blue is the mandatory set. Amber is the check, red is rework, and green is done. The dashed line runs only after a trigger fires, and that layer is tested again.
 
 ## What's in this repo
 
