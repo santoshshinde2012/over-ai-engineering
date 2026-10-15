@@ -4,6 +4,10 @@
 CLAUDE.local.md
 .claude/settings.local.json
 
+# Uncomment a personal MCP file only when it holds tokens.
+# A committed MCP file that only names environment variables stays tracked.
+# .cursor/mcp.json
+
 # Secrets
 .env
 .env.*
