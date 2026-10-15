@@ -17,24 +17,77 @@ This repo is the end-to-end answer: a mandatory vs optional checklist, copy-past
 `AGENTS.md` holds the commands, refusals, and review rules. Cursor, Codex, and VS Code read it directly. Claude Code reads it through `CLAUDE.md`. Gemini CLI reads it when `context.fileName` includes `AGENTS.md`.
 
 ```mermaid
-flowchart LR
+%%{init: {'theme': 'base', 'flowchart': {'htmlLabels': false, 'curve': 'step', 'padding': 18, 'nodeSpacing': 28, 'rankSpacing': 40}, 'themeVariables': {'fontFamily': 'arial', 'fontSize': '15px', 'lineColor': '#5C6B7A', 'textColor': '#1C2833', 'primaryColor': '#F7F8FA', 'primaryTextColor': '#1C2833', 'primaryBorderColor': '#1B3A4B', 'clusterBkg': '#F7F8FA', 'clusterBorder': '#D5DCE3', 'edgeLabelBackground': '#FFFFFF'}}}%%
+flowchart TB
   accTitle: One source of truth, thin shims
-  accDescr: Cursor, Codex, and VS Code read AGENTS.md directly. Claude Code reads it through CLAUDE.md, and Gemini CLI through .gemini/settings.json.
+  accDescr: Cursor, Codex, and VS Code read AGENTS.md directly. Claude Code reads it through CLAUDE.md, and Gemini CLI through .gemini/settings.json. Navy is the source file. Blue is a shim.
 
-  agents["AGENTS.md"]
-  claudeShim["CLAUDE.md<br/>@AGENTS.md"]
-  geminiShim[".gemini/settings.json<br/>context.fileName"]
+  agents("AGENTS.md")
 
-  agents --> cursor["Cursor"]
-  agents --> codex["Codex"]
-  agents --> copilot["VS Code / Copilot"]
-  agents --> claudeShim --> claude["Claude Code"]
-  agents --> geminiShim --> gemini["Gemini CLI"]
+  subgraph direct["Read directly"]
+    direction LR
+    cursor("Cursor")
+    codex("Codex")
+    copilot("VS Code / Copilot")
+    cursor ~~~ codex
+    codex ~~~ copilot
+  end
+
+  subgraph via["Read through a shim"]
+    direction LR
+    claudeShim("CLAUDE.md") --> claude("Claude Code")
+    geminiShim(".gemini/settings.json") --> gemini("Gemini CLI")
+  end
+
+  agents --> direct
+  agents --> via
+
+  class agents source
+  class claudeShim,geminiShim shim
+  class cursor,codex,copilot,claude,gemini agent
+
+  classDef source fill:#1B3A4B,stroke:#1B3A4B,color:#FFFFFF
+  classDef shim fill:#E6EEF5,stroke:#1B3A4B,color:#1B3A4B
+  classDef agent fill:#F7F8FA,stroke:#5C6B7A,color:#1C2833
+
+  style direct fill:#F7F8FA,stroke:#D5DCE3,color:#1B3A4B
+  style via fill:#F7F8FA,stroke:#D5DCE3,color:#1B3A4B
 ```
+
+Navy is the source of truth. Blue is a shim. Gray is an agent.
 
 ## How to use this repo
 
-Audit the product repo, add the mandatory files, and run the acceptance test on every agent in use. Fix and re-test until it passes, then stop. Add an optional layer only when its trigger fires, and test again. The checklist's [apply order](docs/repo-config-checklist.md#apply-order) has each step.
+Audit the product repo, add the mandatory files, and run the acceptance test on every agent in use. Fix and re-test until it passes, then stop. Add an optional layer only when its trigger fires, and test again. The checklist's [apply order](docs/repo-config-checklist.md#apply-order) is this flow.
+
+```mermaid
+%%{init: {'theme': 'base', 'flowchart': {'htmlLabels': false, 'curve': 'basis', 'padding': 18, 'nodeSpacing': 48, 'rankSpacing': 48}, 'themeVariables': {'fontFamily': 'arial', 'fontSize': '15px', 'lineColor': '#5C6B7A', 'textColor': '#1C2833', 'primaryColor': '#F7F8FA', 'primaryTextColor': '#1C2833', 'primaryBorderColor': '#1B3A4B', 'edgeLabelBackground': '#FFFFFF'}}}%%
+flowchart TD
+  accTitle: How to apply the checklist
+  accDescr: Audit, write AGENTS.md and the gitignore, add shims, then test on every agent. A no result fixes AGENTS.md or the shim and tests again. A yes result stops. A dashed line adds one optional layer only after a trigger fires.
+
+  audit("Audit the repo") --> setup("AGENTS.md and gitignore")
+  setup --> shims("Add the shims")
+  shims --> test{"Passes on every agent?"}
+  test -->|Yes| stop(["Stop"])
+  stop -.->|A trigger fires| layer("Add one optional layer")
+  test -->|No| fix("Fix AGENTS.md or the shim")
+  fix -->|Re-test| test
+
+  class audit,setup,shims step
+  class test decision
+  class fix rework
+  class stop terminal
+  class layer later
+
+  classDef step fill:#F7F8FA,stroke:#1B3A4B,color:#1C2833
+  classDef decision fill:#F4F0E6,stroke:#6F6248,color:#1C2833
+  classDef rework fill:#F6F0ED,stroke:#7A4E45,color:#1C2833
+  classDef terminal fill:#1B3A4B,stroke:#1B3A4B,color:#FFFFFF
+  classDef later fill:#E6EEF5,stroke:#1B3A4B,color:#1B3A4B
+```
+
+Solid lines are the required path. Stone is the decision. Clay is rework. The dashed line runs only after a trigger fires, and that layer is tested again.
 
 ## What's in this repo
 
