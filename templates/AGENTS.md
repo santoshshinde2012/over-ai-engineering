@@ -14,9 +14,10 @@ Always-on rules for this repo. Keep this file short. Put procedures in skills.
 - Run: `FILL`
 - Test the change you just made: `FILL` (narrowest command that covers the edit)
 - Lint / typecheck: `FILL`
-- Full suite, when a narrow check is not enough: `FILL`
 
 After every edit, run the narrow test and lint/typecheck. Report the command and the result.
+
+When no narrow command covers the edit, run the full suite: `FILL`.
 
 If a command in this file is wrong, update it in the same change. Do not invent a second toolchain.
 

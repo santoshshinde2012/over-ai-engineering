@@ -12,7 +12,7 @@ This repo is a checklist for coding-agent configuration. It has no application r
 
 - Install: none
 - Run: none
-- Test: no automated suite. After an edit, re-read [docs/repo-config-checklist.md](docs/repo-config-checklist.md) and confirm the change still matches the mandatory set, the acceptance test, and the trigger table. Confirm the README diagrams, the templates, and [.gitignore](.gitignore) still agree with it, and that every relative link resolves. Report what you checked.
+- Test: no automated suite. After an edit, re-read [docs/repo-config-checklist.md](docs/repo-config-checklist.md) and confirm the change still matches the mandatory set, the trigger table, and [templates/acceptance-test.md](templates/acceptance-test.md). Confirm the README diagram, the templates, and [.gitignore](.gitignore) still agree with the checklist, and that every relative link resolves. Report what you checked.
 - Lint / typecheck: none
 
 Do not invent a build, test runner, or package.
