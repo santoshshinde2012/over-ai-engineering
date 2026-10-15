@@ -17,7 +17,7 @@ This repo is the end-to-end answer: a mandatory vs optional checklist, copy-past
 `AGENTS.md` holds the commands, refusals, and review rules. Cursor, Codex, and VS Code read it directly. Claude Code reads it through `CLAUDE.md`. Gemini CLI reads it when `context.fileName` includes `AGENTS.md`.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeCSS': '.flowchart-link[style*=stroke-width] { marker-end: none !important; }', 'flowchart': {'htmlLabels': false, 'curve': 'step', 'padding': 18, 'nodeSpacing': 28, 'rankSpacing': 40}, 'themeVariables': {'fontFamily': 'arial', 'fontSize': '15px', 'lineColor': '#5C6B7A', 'textColor': '#1C2833', 'primaryColor': '#F7F8FA', 'primaryTextColor': '#1C2833', 'primaryBorderColor': '#1B3A4B', 'clusterBkg': '#F7F8FA', 'clusterBorder': '#D5DCE3', 'edgeLabelBackground': '#FFFFFF'}}}%%
+%%{init: {'theme': 'base', 'flowchart': {'htmlLabels': false, 'curve': 'step', 'padding': 18, 'nodeSpacing': 28, 'rankSpacing': 40}, 'themeVariables': {'fontFamily': 'arial', 'fontSize': '15px', 'lineColor': '#5C6B7A', 'textColor': '#1C2833', 'primaryColor': '#F7F8FA', 'primaryTextColor': '#1C2833', 'primaryBorderColor': '#1B3A4B', 'clusterBkg': '#F7F8FA', 'clusterBorder': '#D5DCE3', 'edgeLabelBackground': '#FFFFFF'}}}%%
 flowchart TB
   accTitle: One source of truth, thin shims
   accDescr: Cursor, Codex, and VS Code read AGENTS.md directly. Claude Code reads it through CLAUDE.md, and Gemini CLI through .gemini/settings.json. Navy is the source file. Blue is a shim.
@@ -40,7 +40,7 @@ flowchart TB
   end
 
   agents --> direct
-  direct --> via
+  agents --> via
 
   class agents source
   class claudeShim,geminiShim shim
@@ -52,7 +52,6 @@ flowchart TB
 
   style direct fill:#F7F8FA,stroke:#D5DCE3,color:#1B3A4B
   style via fill:#F7F8FA,stroke:#D5DCE3,color:#1B3A4B
-  linkStyle 5 stroke-width:0px,fill:none
 ```
 
 Navy is the source of truth. Blue is a shim. Gray is an agent.
