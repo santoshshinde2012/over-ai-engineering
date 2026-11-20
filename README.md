@@ -107,3 +107,7 @@ This repo follows its own checklist: the root [AGENTS.md](AGENTS.md), [CLAUDE.md
 ## License
 
 [CC0 1.0](LICENSE). Copy the templates into any repo with no notice or attribution.
+
+## Support
+
+[![Buy Me a Coffee](https://img.shields.io/badge/buymeacoffee-black?style=for-the-badge&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/santoshshin)
