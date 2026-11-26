@@ -121,6 +121,8 @@ This repo's own acceptance table stays empty until a real run fills [docs/accept
 | [templates/acceptance-test.md](templates/acceptance-test.md) | Run the acceptance test and record the result per agent |
 | [docs/acceptance-results.md](docs/acceptance-results.md) | Record those runs. The table is empty until a real run fills it |
 | [templates/skill/SKILL.md](templates/skill/SKILL.md) | Start a skill, once its trigger fires |
+| [docs/skill-quality.md](docs/skill-quality.md) | Measure a skill before you keep it |
+| [templates/skill-quality-check.md](templates/skill-quality-check.md) | Record that measurement. The table is empty until a real run fills it |
 
 This repo follows its own checklist: the root [AGENTS.md](AGENTS.md), [CLAUDE.md](CLAUDE.md), and [.gitignore](.gitignore) are the mandatory set for a docs-only repo. To change the repo, follow [AGENTS.md](AGENTS.md).
 

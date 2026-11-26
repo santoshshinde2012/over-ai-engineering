@@ -1,13 +1,13 @@
 ---
-name: FILL-skill-name # lowercase letters, numbers, hyphens; same as the folder name
-description: FILL what this skill does and when to use it. Include the keywords that should trigger it.
+name: FILL-skill-name # 1-64 characters; lowercase letters, numbers, hyphens; no leading, trailing, or doubled hyphen; same as the folder name
+description: FILL what this skill does and when to use it, in 1024 characters or fewer. Include the words a user would type. The agent reads this before it opens the file.
 ---
 
 # FILL skill title
 
 ## When to use
 
-FILL the task class. One or two sentences.
+FILL the task class. One or two sentences. The agent reads this only after it loads the skill.
 
 ## Steps
 
