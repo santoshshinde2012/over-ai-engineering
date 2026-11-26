@@ -8,18 +8,18 @@ This repo is the end-to-end answer: a mandatory vs optional checklist, copy-past
 
 **Under-configured.** The agent guesses install, test, and safety. The same task gets a different toolchain in each tool. Dangerous commands are only blocked if someone happens to be watching.
 
-**Over-configured.** Every skill and MCP server is loaded on every turn. Rules contradict each other across `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, and Copilot instructions. Tool schemas can cost tens of thousands of tokens before the agent reads the code. Stale instructions are followed because the agent trusts them.
+**Over-configured.** Every skill and MCP server is loaded on every turn. Rules contradict each other across `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, and Copilot instructions. Tool schemas can cost tens of thousands of tokens before the agent reads the code ([about 55K tokens across five MCP servers](https://www.anthropic.com/research/advanced-tool-use)). Stale instruction files are followed even when they disagree with the code, because the file is loaded as an instruction and the code arrives as tool output ([Xu and Wu, 2026](https://arxiv.org/abs/2610.30571)).
 
 **Outcome.** One small always-on config, plus optional layers that exist only because a repeated task, a path-specific rule, or a live system required them.
 
 ## How it works
 
-`AGENTS.md` holds the commands, refusals, and review rules. Cursor, Codex, and VS Code read it directly. Claude Code reads it through `CLAUDE.md`. Gemini CLI reads it when `context.fileName` includes `AGENTS.md`.
+`AGENTS.md` holds the commands, refusals, and review rules. Cursor, Codex, and VS Code read it directly. Claude Code reads `AGENTS.md` directly when no `CLAUDE.md` is present, and through `CLAUDE.md` when one is. Gemini CLI reads it when `context.fileName` includes `AGENTS.md`.
 
 ```mermaid
 flowchart TB
   accTitle: One source of truth, thin shims
-  accDescr: AGENTS.md is the source. Cursor, Codex, and VS Code read it directly. Claude Code reads it through CLAUDE.md, and Gemini CLI through .gemini/settings.json.
+  accDescr: AGENTS.md is the source. Cursor, Codex, and VS Code read it directly. Claude Code reads it through CLAUDE.md when that file is present, and Gemini CLI through .gemini/settings.json when Gemini CLI is in use.
 
   agents("AGENTS.md")
 
@@ -53,9 +53,11 @@ flowchart TB
 
 Blue is the source of truth. Purple is a shim. Gray is an agent.
 
+The `.gemini/settings.json` box is the optional project shim from [templates/gemini-settings.json](templates/gemini-settings.json), copied in only when Gemini CLI is in use, so this repo does not commit it.
+
 ## How to use this repo
 
-Audit the product repo, add the mandatory files, and run the acceptance test on every agent in use. Fix and re-test until it passes, then stop. Add an optional layer only when its trigger fires, and test again. The checklist's [apply order](docs/repo-config-checklist.md#apply-order) is this flow.
+Audit the product repo, add the mandatory files, and run the acceptance test on every agent in use. Fix and re-test until it passes, then stop. Add an optional layer only when its trigger fires, and test again. The checklist's [apply order](docs/repo-config-checklist.md#apply-order) is this flow. Record each real run in [docs/acceptance-results.md](docs/acceptance-results.md). That table is empty until a run fills it.
 
 ```mermaid
 flowchart TB
@@ -100,6 +102,7 @@ Blue is the mandatory set. Amber is the check, red is rework, and green is done.
 | [templates/gemini-settings.json](templates/gemini-settings.json) | Point Gemini CLI at `AGENTS.md` |
 | [templates/gitignore](templates/gitignore) | Keep personal agent files and secrets out of git |
 | [templates/acceptance-test.md](templates/acceptance-test.md) | Run the acceptance test and record the result per agent |
+| [docs/acceptance-results.md](docs/acceptance-results.md) | Record those runs. The table is empty until a real run fills it |
 | [templates/skill/SKILL.md](templates/skill/SKILL.md) | Start a skill, once its trigger fires |
 
 This repo follows its own checklist: the root [AGENTS.md](AGENTS.md), [CLAUDE.md](CLAUDE.md), and [.gitignore](.gitignore) are the mandatory set for a docs-only repo. To change the repo, follow [AGENTS.md](AGENTS.md).

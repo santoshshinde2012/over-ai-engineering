@@ -57,14 +57,16 @@ The body of the rules stays in `AGENTS.md`.
 
 - **Cursor** and **Codex** read root and nested `AGENTS.md`. Nothing to add.
 - **VS Code / GitHub Copilot** reads root `AGENTS.md`. Nothing to add.
-- **Claude Code** skips `AGENTS.md` when a `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` is in the working directory or a parent. If Claude Code is in use, commit [templates/CLAUDE.md](../templates/CLAUDE.md), whose only line is `@AGENTS.md`, so a teammate's `CLAUDE.local.md` cannot hide the rules.
-- **Gemini CLI** loads only `GEMINI.md` by default. If Gemini CLI is in use, copy [templates/gemini-settings.json](../templates/gemini-settings.json) to `.gemini/settings.json`. When that file already exists, add `"AGENTS.md"` to `context.fileName` and leave the rest of the file in place.
+- **Claude Code** reads `AGENTS.md` on v2.1.277 or later when no `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` is in the working directory or a parent. If one of those files is present, it reads the `CLAUDE.md` files and skips `AGENTS.md`. Some sessions still cannot read `AGENTS.md` directly. If Claude Code is in use, commit [templates/CLAUDE.md](../templates/CLAUDE.md), whose only line is `@AGENTS.md`, so a teammate's `CLAUDE.local.md` cannot hide the rules.
+- **Gemini CLI** loads only `GEMINI.md` by default. If Gemini CLI is in use, copy [templates/gemini-settings.json](../templates/gemini-settings.json) to `.gemini/settings.json` (the project file; `~/.gemini/settings.json` is the user file). When the project file already exists, add `"AGENTS.md"` to `context.fileName` and leave the rest of the file in place.
 
 ## Acceptance test
 
 Run this after the mandatory set, once per agent in use, in a fresh session with a small real change. Copy [templates/acceptance-test.md](../templates/acceptance-test.md). The rows in that file are the pass criteria.
 
 On a fail, fix `AGENTS.md` or the shim and run it again. Do not add MCP or skills to make it pass.
+
+This repo's own record is [acceptance-results.md](acceptance-results.md). That table stays empty until someone fills it from a real run. Do not invent a row.
 
 Run it again when the commands or refusals change, the team adopts another agent, or an agent update changes where it reads its files.
 
@@ -84,9 +86,9 @@ Every layer costs attention and rots when the procedure or API changes. Add one 
 | Layer | Trigger to add | Leave it out when |
 | --- | --- | --- |
 | Skill | The same procedure has been re-explained twice (review, release, migration, UI check) | The task is one-off |
-| Domain skill | Data, software, application, or UI/UX steps repeat | The domain note is a one-line command — put that line in `AGENTS.md` |
+| Domain skill | Data, software, application, or UI/UX steps repeat | The domain note is a one-line command: put that line in `AGENTS.md` |
 | MCP server | A documented CLI would make the agent guess flags or output shape, or a secret would otherwise be read into context | A documented command already does the job |
-| Path-scoped rules | A rule applies only to some paths (UI, data, generated code) | The rule applies to the whole repo — it belongs in `AGENTS.md` |
+| Path-scoped rules | A rule applies only to some paths (UI, data, generated code) | The rule applies to the whole repo: it belongs in `AGENTS.md` |
 | Nested `AGENTS.md` | A subdirectory has its own install or test commands (a monorepo package) | The repo has one toolchain |
 | Hook or deny-list | A refusal in `AGENTS.md` was ignored on a dangerous command | The refusal is being followed |
 
@@ -97,8 +99,8 @@ Every layer costs attention and rots when the procedure or API changes. Add one 
 | Skill | `.agents/skills/<name>/SKILL.md`, read by Cursor, Copilot, Codex, and Gemini CLI. Claude Code reads `.claude/skills/`. Symlink from the repo root (below). |
 | MCP | Cursor: `.cursor/mcp.json`. Claude Code: `.mcp.json`. VS Code and Copilot: root `.mcp.json`. Copilot cloud agent: repository settings on GitHub.com, secrets named `COPILOT_MCP_*`. Codex: `.codex/config.toml`, trusted projects only. Gemini CLI: `mcpServers` in `.gemini/settings.json`. |
 | Path-scoped rules | Cursor: `.cursor/rules/*.mdc` with `globs`. Plain `.md` files there are ignored. Claude Code: `.claude/rules/*.md` with `paths`. Copilot: `.github/instructions/*.instructions.md` with `applyTo`. |
-| Nested `AGENTS.md` | Cursor and Codex read it. Claude Code needs a `CLAUDE.md` containing `@AGENTS.md` next to it. VS Code reads it only with the experimental `chat.useNestedAgentsMdFiles` setting. |
-| Hook or deny-list | Claude Code: `permissions.deny` and `PreToolUse` in `.claude/settings.json`. Cursor: `beforeShellExecution` in `.cursor/hooks.json`. VS Code / Copilot: `PreToolUse` in `.github/hooks/*.json` (Preview). Codex: `.codex/hooks.json`, or `.codex/rules/*.rules` (experimental). Gemini CLI: `~/.gemini/policies` only. |
+| Nested `AGENTS.md` | Cursor and Codex read it. Copilot reads nested files along the path from the repo root to the files it works on. `chat.useNestedAgentsMdFiles` is experimental, off by default, and applies to the deprecated Local harness. Claude Code reads a nested `AGENTS.md` when that directory and its parents have no `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md`. Otherwise put `@AGENTS.md` in a `CLAUDE.md` beside it. |
+| Hook or deny-list | Claude Code: `permissions.deny` and `PreToolUse` in `.claude/settings.json`. Cursor: `beforeShellExecution` in `.cursor/hooks.json`. VS Code / Copilot: `preToolUse` in `.github/hooks/*.json` (Preview). `PreToolUse` is a compatible alias with a different payload. Codex: `.codex/hooks.json`, or `.codex/rules/*.rules` (experimental), and only when the project is trusted. Gemini CLI: `~/.gemini/policies/*.toml`. A project `.gemini/policies` directory has no effect. |
 
 Copy [templates/skill/SKILL.md](../templates/skill/SKILL.md). Frontmatter is `name` (lowercase, hyphens, matches the folder) and `description` (what it does and when to use it). The body stays short and points at scripts or reference files. A domain skill names the environment, the verify command, and the refusals: data names the environment and which migration commands are refused, software names module boundaries and the package test, an application names where flows live and how to run, and UI names the states, keyboard, and layout checks.
 
@@ -117,14 +119,15 @@ Instruction files are memory; hooks are enforcement. Use them for commands that 
 
 ## Sources
 
-Vendor paths were checked against official docs on 2026-10-15. Vendors move them; re-check when an agent update changes where it reads its files.
+Vendor paths were checked against official docs on 2026-11-26. Vendors move them; re-check when an agent update changes where it reads its files.
 
-- Claude Code: [memory](https://code.claude.com/docs/en/memory), [settings](https://code.claude.com/docs/en/settings), [hooks](https://code.claude.com/docs/en/hooks-guide)
-- VS Code: [custom instructions](https://code.visualstudio.com/docs/agent-customization/custom-instructions), [MCP](https://code.visualstudio.com/docs/agent-customization/mcp-servers), [hooks](https://code.visualstudio.com/docs/agent-customization/hooks)
-- Cursor: [rules](https://cursor.com/docs/context/rules), [skills](https://cursor.com/docs/context/skills), [hooks](https://cursor.com/docs/agent/hooks)
-- Codex: [AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [rules](https://learn.chatgpt.com/docs/agent-configuration/rules)
-- Gemini CLI: [configuration](https://geminicli.com/docs/reference/configuration/), [MCP](https://geminicli.com/docs/tools/mcp-server/), [policy engine](https://geminicli.com/docs/reference/policy-engine/)
-- [Agent Skills spec](https://agentskills.io/specification) — portable `SKILL.md`
-- [OWASP Secure Coding with AI](https://cheatsheetseries.owasp.org/cheatsheets/Secure_Coding_with_AI_Cheat_Sheet.html) — agents and MCP as an attack surface
+- Claude Code: [memory](https://code.claude.com/docs/en/memory), [settings](https://code.claude.com/docs/en/settings), [hooks](https://code.claude.com/docs/en/hooks-guide), [skills](https://code.claude.com/docs/en/skills)
+- VS Code: [custom instructions](https://code.visualstudio.com/docs/agent-customization/custom-instructions), [instruction reference](https://code.visualstudio.com/docs/agents/reference/custom-instructions-reference), [MCP](https://code.visualstudio.com/docs/agent-customization/mcp-servers), [hooks](https://code.visualstudio.com/docs/agent-customization/hooks), [hook migration](https://code.visualstudio.com/docs/agent-customization/migrate-customizations), [approvals](https://code.visualstudio.com/docs/agents/run/approvals)
+- Copilot on GitHub: [repository MCP](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/configure-mcp-servers), [skills](https://docs.github.com/en/copilot/concepts/customizations/agent-skills)
+- Cursor: [rules](https://cursor.com/docs/rules), [skills](https://cursor.com/docs/skills), [hooks](https://cursor.com/docs/hooks), [MCP](https://cursor.com/docs/mcp)
+- Codex: [AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [rules](https://learn.chatgpt.com/docs/agent-configuration/rules), [hooks](https://learn.chatgpt.com/docs/hooks), [config](https://learn.chatgpt.com/docs/config-file/config-basic), [skills](https://learn.chatgpt.com/docs/build-skills)
+- Gemini CLI: [GEMINI.md](https://geminicli.com/docs/cli/gemini-md/), [configuration](https://geminicli.com/docs/reference/configuration/), [MCP](https://geminicli.com/docs/tools/mcp-server/), [policy engine](https://geminicli.com/docs/reference/policy-engine/), [skills](https://geminicli.com/docs/cli/using-agent-skills/)
+- [Agent Skills spec](https://agentskills.io/specification): portable `SKILL.md`
+- [OWASP Secure Coding with AI](https://cheatsheetseries.owasp.org/cheatsheets/Secure_Coding_with_AI_Cheat_Sheet.html): agents and MCP as an attack surface
 
 Design notes: [AI coding agents compared (Eazler, Oct 2026)](https://blog.eazler.com/en/ai-coding-agents-landscape), [Capability matrix 2026](https://baeseokjae.github.io/posts/ai-coding-agent-capability-matrix-2026/), [AGENTS.md vs skills vs MCP vs CLI](https://balazscsorba.com/blog/agents-md-skills-mcp-cli-decision-matrix).
