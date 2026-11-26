@@ -15,6 +15,10 @@ FILL the task class. One or two sentences. The agent reads this only after it lo
 2. FILL
 3. Run the verify command from `AGENTS.md` that covers this change.
 
+## Lighter path
+
+FILL the simpler procedure to use when the full workflow is unnecessary, and the condition that selects it. Keep the required checks.
+
 ## Stop if
 
 - FILL the condition that means this skill does not apply.

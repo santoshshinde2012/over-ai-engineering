@@ -1,31 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="880" height="360" viewBox="0 0 880 360" role="img" aria-labelledby="title desc">
-  <title id="title">Published skill pass rates, with and without a skill</title>
-  <desc id="desc">SkillsBench hard tasks rise from 33.9 percent to 50.5 percent. SWE-Skills-Bench public skills stay at 76.59 percent and 76.93 percent. These are the papers' results, not a run of this repository.</desc>
-  <rect width="880" height="360" fill="#fafaf9"/>
-  <text x="32" y="36" fill="#1c1917" font-family="Georgia, serif" font-size="20">Published pass rates. This repository did not run these studies.</text>
-  <g transform="translate(32,64)">
-    <text x="0" y="0" fill="#1c1917" font-family="Georgia, serif" font-size="16">Hard tasks</text>
-    <text x="0" y="22" fill="#57534e" font-family="Georgia, serif" font-size="13">SkillsBench, 87 tasks, 18 setups</text>
-    <line x1="36" y1="48" x2="36" y2="210" stroke="#d6d3d1"/>
-    <line x1="36" y1="210" x2="360" y2="210" stroke="#d6d3d1"/>
-    <rect x="90" y="155" width="56" height="55" fill="#a8a29e"/>
-    <rect x="190" y="128" width="56" height="82" fill="#1f883d"/>
-    <text x="118" y="148" text-anchor="middle" fill="#1c1917" font-family="Georgia, serif" font-size="13">33.9%</text>
-    <text x="218" y="120" text-anchor="middle" fill="#1c1917" font-family="Georgia, serif" font-size="13">50.5%</text>
-    <text x="118" y="230" text-anchor="middle" fill="#57534e" font-family="Georgia, serif" font-size="13">Without</text>
-    <text x="218" y="230" text-anchor="middle" fill="#57534e" font-family="Georgia, serif" font-size="13">With</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="414" viewBox="0 0 880 414" role="img" aria-labelledby="title desc">
+  <title id="title">Published skill results, measured within each study</title>
+  <desc id="desc">Two separate paired comparisons, with different scores and samples. SkillsBench task pass rate rises from 33.9 to 50.5 percent, a gain of 16.6 percentage points. SWE-Skills-Bench average share of executable checks passed moves from 76.59 to 76.93 percent, a gain of 0.34 percentage points. Each requirement contributes equally to the latter average. These are published results, not runs of this repository. There is no shared chart scale.</desc>
+  <rect width="880" height="414" fill="#fafaf9"/>
+  <text x="32" y="36" fill="#1c1917" font-family="Georgia, serif" font-size="20">Published skill results. This repository did not run these studies.</text>
+  <text x="32" y="61" fill="#57534e" font-family="Georgia, serif" font-size="13">Different scores and samples. Compare With and Without inside each study.</text>
+  <g transform="translate(32,88)">
+    <rect width="396" height="262" rx="8" fill="#ffffff" stroke="#d6d3d1"/>
+    <text x="24" y="31" fill="#1c1917" font-family="Georgia, serif" font-size="17">SkillsBench</text>
+    <text x="24" y="55" fill="#57534e" font-family="Georgia, serif" font-size="13">87 tasks · 18 model and harness setups</text>
+    <text x="24" y="94" fill="#1c1917" font-family="Georgia, serif" font-size="15">Task pass rate</text>
+    <text x="24" y="139" fill="#57534e" font-family="Georgia, serif" font-size="32">33.9%</text>
+    <text x="174" y="136" fill="#a8a29e" font-family="Georgia, serif" font-size="24">→</text>
+    <text x="232" y="139" fill="#1f883d" font-family="Georgia, serif" font-size="32">50.5%</text>
+    <text x="24" y="162" fill="#57534e" font-family="Georgia, serif" font-size="13">Without skills</text>
+    <text x="232" y="162" fill="#57534e" font-family="Georgia, serif" font-size="13">With skills</text>
+    <line x1="24" y1="183" x2="372" y2="183" stroke="#d6d3d1"/>
+    <text x="24" y="209" fill="#1f883d" font-family="Georgia, serif" font-size="16">+16.6 percentage points</text>
+    <text x="24" y="236" fill="#57534e" font-family="Georgia, serif" font-size="13">Curated skills · agent discovers the skill</text>
   </g>
-  <g transform="translate(460,64)">
-    <text x="0" y="0" fill="#1c1917" font-family="Georgia, serif" font-size="16">Public software skills</text>
-    <text x="0" y="22" fill="#57534e" font-family="Georgia, serif" font-size="13">SWE-Skills-Bench, 98 skills</text>
-    <line x1="36" y1="48" x2="36" y2="210" stroke="#d6d3d1"/>
-    <line x1="36" y1="210" x2="360" y2="210" stroke="#d6d3d1"/>
-    <rect x="90" y="86" width="56" height="124" fill="#a8a29e"/>
-    <rect x="190" y="85" width="56" height="125" fill="#1f883d"/>
-    <text x="118" y="78" text-anchor="middle" fill="#1c1917" font-family="Georgia, serif" font-size="13">76.59%</text>
-    <text x="218" y="76" text-anchor="middle" fill="#1c1917" font-family="Georgia, serif" font-size="13">76.93%</text>
-    <text x="118" y="230" text-anchor="middle" fill="#57534e" font-family="Georgia, serif" font-size="13">Without</text>
-    <text x="218" y="230" text-anchor="middle" fill="#57534e" font-family="Georgia, serif" font-size="13">With</text>
+  <g transform="translate(452,88)">
+    <rect width="396" height="262" rx="8" fill="#ffffff" stroke="#d6d3d1"/>
+    <text x="24" y="31" fill="#1c1917" font-family="Georgia, serif" font-size="17">SWE-Skills-Bench</text>
+    <text x="24" y="55" fill="#57534e" font-family="Georgia, serif" font-size="13">98 skills · 10 requirements each · 4 setups</text>
+    <text x="24" y="94" fill="#1c1917" font-family="Georgia, serif" font-size="15">Average share of checks passed</text>
+    <text x="24" y="139" fill="#57534e" font-family="Georgia, serif" font-size="32">76.59%</text>
+    <text x="174" y="136" fill="#a8a29e" font-family="Georgia, serif" font-size="24">→</text>
+    <text x="232" y="139" fill="#1f883d" font-family="Georgia, serif" font-size="32">76.93%</text>
+    <text x="24" y="162" fill="#57534e" font-family="Georgia, serif" font-size="13">Without skill</text>
+    <text x="232" y="162" fill="#57534e" font-family="Georgia, serif" font-size="13">With skill</text>
+    <line x1="24" y1="183" x2="372" y2="183" stroke="#d6d3d1"/>
+    <text x="24" y="209" fill="#1f883d" font-family="Georgia, serif" font-size="16">+0.34 percentage points</text>
+    <text x="24" y="236" fill="#57534e" font-family="Georgia, serif" font-size="13">Public skills · skill invoked explicitly</text>
   </g>
-  <text x="32" y="332" fill="#57534e" font-family="Georgia, serif" font-size="13">Scale is 0 to 100. The right-hand pair is almost the same height on purpose.</text>
+  <text x="32" y="379" fill="#57534e" font-family="Georgia, serif" font-size="13">SWE averages requirement-level check fractions equally. These percentages are not the same measure.</text>
+  <text x="32" y="400" fill="#57534e" font-family="Georgia, serif" font-size="13">Source selection differs too. Neither paper measures a skill in your repository.</text>
 </svg>
