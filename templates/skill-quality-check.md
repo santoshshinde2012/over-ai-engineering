@@ -110,4 +110,12 @@ Optional previous-version result and evidence:
 | Result: Pass / Fail / Inconclusive / Unmeasured | |
 | Keep, revise, gather evidence, or remove / reason | |
 
-**Pass** requires file checks, fresh discovery targets, and repeated output evidence supporting the declared benefit without breaking required checks or cost limits. Equal required quality with lower measured cost is eligible. **Fail** records a completed required-check failure or a predeclared failure threshold being met. **Inconclusive** means completed measurements establish neither success nor a declared failure. **Unmeasured** means required work or evidence is missing. A blank result is unmeasured. Do not erase a known failure because other checks are incomplete.
+**Pass** requires file checks, fresh discovery targets, and repeated output evidence supporting the declared benefit without breaking required checks or cost limits. Equal required quality with lower measured cost is eligible.
+
+**Fail** means a required file or discovery check fails, the candidate with-skill condition breaks a required output check, or a declared failure threshold is met.
+
+**Inconclusive** means completed measurements establish neither success nor a declared failure.
+
+**Unmeasured** means required work or evidence is missing. A blank result is unmeasured.
+
+A failed baseline check stays recorded but does not, by itself, fail the candidate. Keep per-run failures visible even when the overall decision is Pass. Do not erase a known candidate failure because other checks are incomplete.

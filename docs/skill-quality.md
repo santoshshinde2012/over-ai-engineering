@@ -86,11 +86,13 @@ Use the [template](../templates/skill-quality-check.md) to preserve metadata, ta
 | Result | Meaning |
 | --- | --- |
 | Pass | File checks pass, fresh discovery tests meet declared targets, and repeated output runs support the declared benefit without breaking required checks or cost limits. Keep for that tested use. |
-| Fail | A completed required check fails or a predeclared failure threshold is met. Fix the cause before keeping the skill. |
+| Fail | A required file or discovery check fails, the candidate with-skill condition breaks a required output check, or a declared failure threshold is met. Fix the cause before keeping the skill. |
 | Inconclusive | Completed measurements establish neither the benefit nor a declared failure. Gather evidence, revise, or leave the skill out. |
 | Unmeasured | Required checks or runs have not been completed or recorded. Do not imply they passed. |
 
-Record failures even if other evidence is missing. A blank result is unmeasured, never a silent pass. Remove the layer when its trigger stops being true; do not add more prose to hide an unsupported result. This procedure does not rank models or transfer a published average to an individual skill.
+A failed baseline check stays in the record but does not, by itself, fail the candidate. It may be the evidence of a gain. Keep per-run failures visible even when the overall decision is Pass. Record known candidate failures even if other evidence is missing.
+
+A blank result is unmeasured, never a silent pass. Remove the layer when its trigger stops being true; do not add more prose to hide an unsupported result. This procedure does not rank models or transfer a published average to an individual skill.
 
 ## Main references
 
