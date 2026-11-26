@@ -107,6 +107,8 @@ SkillsBench also reports that more skills are not a larger lift: one skill gaine
 
 The third reference for how a skill is loaded, not for these pass rates, is the [Agent Skills specification](https://agentskills.io/specification). The agent sees `name` and `description` before it opens the file.
 
+How to measure one skill, and when to delete it, is [docs/skill-quality.md](docs/skill-quality.md). A skill that holds the answer to one task is not a measurement. A skill that is too heavy, that replaces a stronger default, or that points at a tool the agent cannot debug, is a skill to fix or remove.
+
 This repo's own acceptance table stays empty until a real run fills [docs/acceptance-results.md](docs/acceptance-results.md).
 
 ## What's in this repo

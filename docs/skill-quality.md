@@ -8,6 +8,8 @@ A skill is a procedure the agent loads when a task matches its description. A fi
 
 Count a fact only from a check you ran. Leave the cell blank otherwise. A blank cell is not a pass. This repo has no skill, so it has no filled record. Copy [templates/skill-quality-check.md](../templates/skill-quality-check.md) into the product repo when a skill's trigger has fired.
 
+The reason to measure is in the published record, not in the file. [SkillsBench](https://arxiv.org/abs/2602.12670) raised the average pass rate on 87 hard tasks from 33.9% to 50.5%, and 13 of those tasks got worse. [SWE-Skills-Bench](https://arxiv.org/abs/2603.15401) found no detectable effect for 92 of 98 public software skills. The pass rates are charted in the [README](../README.md#published-skill-benchmarks). This repository did not run either study. A skill that contains the answer to one graded task is an answer key, not a measurement. A skill fails in use when the path is too heavy to finish, when it replaces a stronger default, or when it points at a tool the agent cannot debug.
+
 ```mermaid
 flowchart TB
   accTitle: Measure a skill before you keep it
@@ -77,7 +79,7 @@ After the first pair of runs, write assertions you can check. "The output file i
 
 Drop an assertion that passes both with and without the skill. The model already does that, so the assertion does not measure the skill. Fix an assertion that fails both ways before you blame the file.
 
-Write down the pass count on each side. If the client reports tokens or duration, write those down too. The skill earns its place when the with-skill pass count is higher on the assertions the no-skill run failed, and you accept the extra tokens and time. The same pass count means you fix the skill and run again, or you delete it. The [checklist](repo-config-checklist.md#optional) says the same thing: remove the layer when its trigger stops being true.
+Write down the pass count on each side. If the client reports tokens or duration, write those down too. The skill earns its place when the with-skill pass count is higher on the assertions the no-skill run failed, and you accept the extra tokens and time. The same pass count means you fix the skill and run again, or you delete it. A lower pass count means look for a path that is too heavy, a default the skill replaced, or a tool the agent cannot debug, before you add more prose. The [checklist](repo-config-checklist.md#optional) says the same thing: remove the layer when its trigger stops being true.
 
 OpenAI's skill eval notes use the same shape for one skill: on the order of 10 to 20 prompts, a negative control that is adjacent to the skill, and checks for the outcome, the steps taken, and wasted work. Grow the set from misses you actually see. Do not invent a large suite first.
 
@@ -100,4 +102,6 @@ Checked on 2026-11-26.
 - [Testing agent skills with evals](https://developers.openai.com/blog/eval-skills): 10 to 20 prompts, negative controls, outcome and process checks
 - [Cursor skills](https://cursor.com/docs/skills): Cursor shows the agent the available skills, and the agent decides when one is relevant
 - [Gemini CLI skills](https://geminicli.com/docs/cli/tutorials/skills-getting-started/): a skill file without `name` and `description` is skipped
+- [SkillsBench](https://arxiv.org/abs/2602.12670): paired pass rates on hard tasks, tasks that got worse, and the answer-key warning
+- [SWE-Skills-Bench](https://arxiv.org/abs/2603.15401): paired pass rates on public software skills
 - [SkillEval](https://arxiv.org/abs/2608.06891): document properties, and the SkillsBench correlation cited above
