@@ -1,25 +1,25 @@
 # Measuring skill quality
 
-A skill is a procedure the agent loads when a task matches its description. A finished-looking file is not evidence that this happens. Quality, in this repo, is three recorded facts:
+A finished `SKILL.md` is not a measured skill. Keep one for a tested use when three checks support it:
 
-1. The file meets the Agent Skills spec.
-2. The agent loads it on the tasks it is for, and leaves it closed on near misses.
-3. A fresh run with the skill passes checks that a fresh run without it fails.
+1. The file is valid and its procedure has a clear boundary.
+2. The agent loads it on intended tasks and leaves it closed on near misses, against declared targets.
+3. Repeated paired runs support the declared benefit: better results at an accepted cost, or the same required quality with less time or fewer tokens.
 
-Count a fact only from a check you ran. Leave the cell blank otherwise. A blank cell is not a pass. This repo has no skill, so it has no filled record. Copy [templates/skill-quality-check.md](../templates/skill-quality-check.md) into the product repo when a skill's trigger has fired.
+Copy [the blank record](../templates/skill-quality-check.md) into the product repo after the [skill trigger](repo-config-checklist.md#optional) fires. Fill it from checks you ran. This repository contains no installed skill and no measured skill result. A blank cell is not a pass.
 
-The reason to measure is in the published record, not in the file. [SkillsBench](https://arxiv.org/abs/2602.12670) raised the average pass rate on 87 hard tasks from 33.9% to 50.5%, and 13 of those tasks got worse. [SWE-Skills-Bench](https://arxiv.org/abs/2603.15401) found no detectable effect for 92 of 98 public software skills. The pass rates are charted in the [README](../README.md#published-skill-benchmarks). This repository did not run either study. A skill that contains the answer to one graded task is an answer key, not a measurement. A skill fails in use when the path is too heavy to finish, when it replaces a stronger default, or when it points at a tool the agent cannot debug.
+Published results explain why the comparison matters. [SkillsBench](https://arxiv.org/abs/2602.12670) reports an average task pass rate of 33.9% without curated skills and 50.5% with them across 87 tasks and 18 model-harness setups. [SWE-Skills-Bench](https://arxiv.org/abs/2603.15401) finds no statistically detectable effect for 92 of 98 public software skills; its average share of executable checks passed moves from 76.59% to 76.93%. These are different units, task sets, and invocation methods. Neither average grades your skill. The [README chart](../README.md#published-skill-benchmarks) shows published evidence, not experiments run by this repository.
 
 ```mermaid
 flowchart TB
-  accTitle: Measure a skill before you keep it
-  accDescr: Static checks come first. Trigger runs ask whether the agent loads the skill. Output runs compare a fresh session with the skill to a fresh session without it. Keep the skill when the with-skill pass count is higher and you accept the extra cost. Otherwise fix the skill or delete it.
+  accTitle: Measure a skill before keeping it
+  accDescr: Read the file, test discovery, and compare repeated runs with and without the skill. Keep it for the tested use only when the declared benefit is supported and required checks still pass. Failed or mixed evidence calls for repair or more evidence.
 
-  static("Static checks") --> trigger("Trigger runs")
-  trigger --> output("With skill and without")
-  output --> decide{"Pass count higher?"}
-  decide -->|Yes| keep(["Keep"])
-  decide -->|No| fix("Fix or delete")
+  static("Read the file") --> trigger("Test discovery")
+  trigger --> output("Compare repeated pairs")
+  output --> decide{"Declared benefit supported?"}
+  decide -->|Yes, required checks pass| keep(["Keep for tested use"])
+  decide -->|No or inconclusive| fix("Fix or gather evidence")
 
   classDef step fill:#0969DA,stroke:#0969DA,color:#FFFFFF
   classDef check fill:#9A6700,stroke:#9A6700,color:#FFFFFF
@@ -32,76 +32,70 @@ flowchart TB
   class fix rework
 ```
 
-Blue is the work. Amber is the decision. Green keeps the skill. Red sends it back.
+## 1. Read the file
 
-## What the agent actually sees
+Separate the [specification's format rules](https://agentskills.io/specification) from authoring recommendations and this repo's quality checks.
 
-At startup the agent loads each skill's `name` and `description`, on the order of 100 tokens, and not the body. It loads `SKILL.md` after it decides the skill applies. Files under `scripts/`, `references/`, and `assets/` load only when a step points at them. The description is the whole trigger. A "When to use" section in the body is invisible until the file is already open.
-
-Agents often skip a skill for a one-step task they can do with ordinary tools. A miss on "read this PDF" does not, by itself, mean the description is bad. The description matters when the task needs a procedure, a format, or a rule the agent would not already follow.
-
-The spec's frontmatter check (`skills-ref validate ./my-skill`) checks the name and description rules. It does not tell you whether the agent loads the skill, or whether the output changed. This repo does not install that tool.
-
-## 1. Static checks
-
-Read the file. Do not start an agent. Record each row in the template.
-
-| Check | Pass when |
+| Check | Record |
 | --- | --- |
-| `name` | 1 to 64 characters. Lowercase letters, numbers, and hyphens. It does not start or end with a hyphen, does not contain `--`, and matches the folder name. |
-| `description` | 1 to 1024 characters. It says what the skill does and when to use it, and it includes words a user would actually type. "Helps with PDFs" fails. |
-| Body agrees with the description | The steps can do the thing the description promises. A description that claims a chart, and a body that never makes one, fails. |
-| Steps are executable | The steps name the command, path, or tool. They end by running the verify command from `AGENTS.md`. |
-| Stop conditions | The file says when the skill does not apply, and it points at the refusals in `AGENTS.md`. |
-| Size | The body stays under 500 lines. Detail lives in a referenced file, one link deep from `SKILL.md`. The body does not paste `AGENTS.md` again. |
+| Required format | YAML frontmatter and Markdown body. `name` is 1–64 lowercase alphanumeric characters or hyphens, matches its folder, and has no leading, trailing, or doubled hyphen. `description` is non-empty and at most 1024 characters. |
+| Description and procedure | The description names the work and when to use it. The body can deliver what it promises. A vague description may fit the format and still fail this quality check. |
+| Executable steps | Commands, paths, and tools exist for the intended environment. Verification uses the product repo's documented command; if missing, identify it rather than inventing a successful check. |
+| Boundary | State when to stop or use a lighter path. Refer to applicable `AGENTS.md` rules instead of copying them. Do not turn a new-task request into unauthorized changes to existing work. |
+| Size recommendation | The spec recommends a body under 500 lines and references for detail. A longer body is not automatically invalid; record why its context cost is justified. |
 
-SkillEval splits a skill document into format, trigger clarity, agreement between the description and the body, concrete commands, a full workflow, explicit inputs and outputs, and failure handling. The rows above are the ones you can decide by reading. A full input and output contract shows up later, as assertions on a real run. The paper reports that a learned reading of those properties tracked pass-rate uplift on SkillsBench (Pearson r from 0.779 to 0.787) and that revisions aimed at the weak properties raised the mean pass rate by 29.5 percentage points. That probe is not a command in this repo.
+If available, `skills-ref validate ./my-skill` checks naming and frontmatter. This repo does not install it. Record the command or manual inspection used; neither proves discovery or usefulness.
 
-## 2. Trigger runs
+## 2. Test discovery
 
-Write the prompts before you rewrite the description to match them.
+The agent normally sees a skill's name and description before activation, then loads the body and needed resources. A boundary hidden only in the body cannot help that initial choice. Explicit invocation bypasses discovery; it can still test execution quality. Label the route.
 
-Use about 20 prompts: 8 to 10 that should load the skill, and 8 to 10 that should not. The useful negatives are near misses. They share words with the skill and need a different procedure. "What is the weather?" shares nothing and tests nothing. Vary the wording: formal, casual, a typo, a prompt that names the domain, and a prompt that only describes the need.
+Follow the [description guide](https://agentskills.io/skill-creation/optimizing-descriptions) with realistic, pre-labeled prompts. About 20 is a starting point, roughly balanced between intended loads and near misses. Vary phrasing and detail. A new-demo-app skill should load for a request to create a new demo, and stay closed for an edit to an existing demo. An unrelated weather query tests little about that boundary.
 
-Hold about 40 percent of the prompts back, with both kinds in the held-out set. Edit the description from the training prompts only. Do not paste distinctive words from a failed prompt into the description. That fits those sentences and misses the next user.
+Use roughly 60% for editing and 40% for revision selection. Both contain positive and negative prompts. The selection set is validation, not an untouched test. After choosing a revision, test 5–10 fresh prompts not used for either purpose. Record the split and keep those results separate.
 
-Run each prompt in a fresh session, three times. A pass is: the skill should load and the agent opened `SKILL.md`, or it should not load and the agent never opened it. A should-load prompt passes when it loads on more than half the runs. A should-not prompt passes when it loads on fewer than half. Half is the default in the Agent Skills description guide, not a measured law. Write down how you saw the load (a tool call, a log line, a file read). A guess is a blank cell.
+Declare the runs per prompt, per-prompt threshold, positive and negative aggregate targets, and negative observation window before testing. Three fresh sessions per prompt is a practical start: an intended load passes at two or three activations; a near miss passes at zero or one. This follows the guide's 0.5 default, not a universal performance standard.
 
-Five revision passes are usually enough. If the training prompts still fail, the prompts may be mislabeled. The description guide asks you to pick the revision with the best held-out pass rate, which may be an earlier draft.
+Record activation evidence: a file read, native invocation, or confirming log. No file read yet is not a completed negative. Observe the full task or a fixed declared decision window. Record incomplete runs separately and explain exclusions; a guess stays unmeasured. Report loaded/valid-run counts and pass counts separately for each split and label.
 
-## 3. Output runs
+## 3. Compare output and cost
 
-Triggering is not a good result. Start with 2 or 3 realistic task prompts, each with a sentence that says what success looks like. Include a path, a name, or a constraint a user would actually give. "Process this data" tests nothing.
+The [output evaluation guide](https://agentskills.io/skill-creation/evaluating-skills) starts with 2–3 realistic tasks and exploratory paired runs. Use exploration to discover missing checks. Before scoring, freeze the prompts, inputs, success criteria, required checks, benefit claim, cost limits, and repetition plan. If those change, start a new comparison.
 
-Run each prompt twice, in fresh sessions: once with the skill available, once without it. When you are editing an existing skill, keep the previous file and use that as the baseline instead.
+Run each task with the skill available and without it. Both conditions use the same repository/input snapshot, model and harness versions, settings, tools, permissions, and budget. Reset output files and verification changes between runs; a fresh chat does not reset the repository. Record whether the available skill actually activated. Do not discard non-activations from an availability comparison. A separately labeled explicit-invocation comparison can isolate execution more directly.
 
-After the first pair of runs, write assertions you can check. "The output file is valid JSON" can pass or fail. "The output is good" cannot. Grade each assertion Pass or Fail and quote the output or the command log. A heading that says "Summary" with one empty sentence fails an assertion that asks for a summary.
+For a revision, compare with the old file as well when useful. Beating a previous version does not establish a benefit over no skill. Record exactly which baseline supports the claim.
 
-Drop an assertion that passes both with and without the skill. The model already does that, so the assertion does not measure the skill. Fix an assertion that fails both ways before you blame the file.
+Begin with three pairs per task, vary condition order, and retain every run. This is an initial check, not a claim of statistical significance. Small or inconsistent differences need more evidence. Keep task-specific answers and verifier details out of the reusable skill.
 
-Write down the pass count on each side. If the client reports tokens or duration, write those down too. The skill earns its place when the with-skill pass count is higher on the assertions the no-skill run failed, and you accept the extra tokens and time. The same pass count means you fix the skill and run again, or you delete it. A lower pass count means look for a path that is too heavy, a default the skill replaced, or a tool the agent cannot debug, before you add more prose. The [checklist](repo-config-checklist.md#optional) says the same thing: remove the layer when its trigger stops being true.
+Grade frozen checks on both sides and save commands, logs, diffs, outputs, and needed human review. Keep every check:
 
-OpenAI's skill eval notes use the same shape for one skill: on the order of 10 to 20 prompts, a negative control that is adjacent to the skill, and checks for the outcome, the steps taken, and wasted work. Grow the set from misses you actually see. Do not invent a large suite first.
+- Both pass: no gain on that check; retain it to detect later regressions.
+- Only the skill passes: a gain.
+- Only no-skill passes: a regression, not a row to remove.
+- Both fail: inspect the setup and assertion; fix a check only if it was wrong. A real requirement remains failed.
 
-## What this does not measure
+Do not let an easy extra pass compensate for a broken required check. Record duration and tokens using the same definitions on both sides. Missing cost data permits no claim about that cost. Equal required quality with lower measured cost can justify a skill. A faster run that breaks a requirement cannot.
 
-A long file, a large skill directory, or a skill that triggers because you named it in the prompt. Explicit invocation checks that the name still resolves. It does not check that the description is any good. Compare the implicit prompts, the ones that never mention the skill, with the near misses.
+Freezing scored checks and retaining the full regression record are this repo's additional rules; the guide also describes an exploratory iteration loop. Do not treat exploratory results as the final comparison.
 
-This repo does not rank skills, agents, or models, and it does not score a file with an embedding. The SkillsBench numbers above are that paper's result under its own setup (Codex, GPT-5.5, three runs per condition). They are not a score for your skill until you run your checks.
+## Decide from the record
 
-## Sources
+Use the [template](../templates/skill-quality-check.md) to preserve metadata, targets, prompt splits, individual pairs, evidence, and the decision. Scope the result to the tested tasks, skill version, and agent setup.
 
-Checked on 2026-11-26.
+| Result | Meaning |
+| --- | --- |
+| Pass | File checks pass, fresh discovery tests meet declared targets, and repeated output runs support the declared benefit without breaking required checks or cost limits. Keep for that tested use. |
+| Fail | A completed required check fails or a predeclared failure threshold is met. Fix the cause before keeping the skill. |
+| Inconclusive | Completed measurements establish neither the benefit nor a declared failure. Gather evidence, revise, or leave the skill out. |
+| Unmeasured | Required checks or runs have not been completed or recorded. Do not imply they passed. |
 
-- [Agent Skills spec](https://agentskills.io/specification): name, description, progressive disclosure, 500-line body, `skills-ref validate`
-- [Optimizing skill descriptions](https://agentskills.io/skill-creation/optimizing-descriptions): description as the trigger, about 20 queries, three runs, the 0.5 default, the held-out split
-- [Evaluating skill output quality](https://agentskills.io/skill-creation/evaluating-skills): with-skill and without-skill runs, assertions, evidence, dropping checks that pass both ways
-- [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices): description says what and when, body under 500 lines, do not write "I can help"
-- [Claude Code skills](https://code.claude.com/docs/en/skills): the description is what Claude uses to decide
-- [Codex skills](https://learn.chatgpt.com/docs/build-skills): implicit invocation matches the description
-- [Testing agent skills with evals](https://developers.openai.com/blog/eval-skills): 10 to 20 prompts, negative controls, outcome and process checks
-- [Cursor skills](https://cursor.com/docs/skills): Cursor shows the agent the available skills, and the agent decides when one is relevant
-- [Gemini CLI skills](https://geminicli.com/docs/cli/tutorials/skills-getting-started/): a skill file without `name` and `description` is skipped
-- [SkillsBench](https://arxiv.org/abs/2602.12670): paired pass rates on hard tasks, tasks that got worse, and the answer-key warning
-- [SWE-Skills-Bench](https://arxiv.org/abs/2603.15401): paired pass rates on public software skills
-- [SkillEval](https://arxiv.org/abs/2608.06891): document properties, and the SkillsBench correlation cited above
+Record failures even if other evidence is missing. A blank result is unmeasured, never a silent pass. Remove the layer when its trigger stops being true; do not add more prose to hide an unsupported result. This procedure does not rank models or transfer a published average to an individual skill.
+
+## Main references
+
+Checked on 2026-11-26. Supporting guides are linked at the steps they inform.
+
+1. [SkillsBench](https://arxiv.org/abs/2602.12670) — paired task pass rates with curated skills.
+2. [SWE-Skills-Bench](https://arxiv.org/abs/2603.15401) — skill-level effects and executable-check pass ratios.
+3. [Agent Skills specification](https://agentskills.io/specification) — format, progressive loading, and recommended structure.

@@ -8,7 +8,7 @@ This repo is the end-to-end answer: a mandatory vs optional checklist, copy-past
 
 **Under-configured.** The agent guesses install, test, and safety. The same task gets a different toolchain in each tool. Dangerous commands are only blocked if someone happens to be watching.
 
-**Over-configured.** Every skill and MCP server is loaded on every turn. Rules contradict each other across `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, and Copilot instructions. Tool schemas can cost tens of thousands of tokens before the agent reads the code ([about 55K tokens across five MCP servers](https://www.anthropic.com/research/advanced-tool-use)). Stale instruction files are followed even when they disagree with the code, because the file is loaded as an instruction and the code arrives as tool output ([Xu and Wu, 2026](https://arxiv.org/abs/2610.30571)).
+**Over-configured.** Unnecessary always-on instructions and exposed tool schemas crowd the context. Rules contradict each other across `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, and Copilot instructions. One published example counted [about 55K tokens of schemas across five MCP servers](https://www.anthropic.com/research/advanced-tool-use), before any task work. Stale instruction files are followed even when they disagree with the code, because the file is loaded as an instruction and the code arrives as tool output ([Xu and Wu, 2026](https://arxiv.org/abs/2610.30571)).
 
 **Outcome.** One small always-on config, plus optional layers that exist only because a repeated task, a path-specific rule, or a live system required them.
 
@@ -94,22 +94,23 @@ Blue is the mandatory set. Amber is the check, red is rework, and green is done.
 
 ## Published skill benchmarks
 
-This repository did not run these studies. The chart copies their published pass rates, checked on 2026-11-26. A skill in a product repo is judged the same way: the same task, once with the skill and once without it.
+This repository did not run these studies. The numbers below come from the papers, checked on 2026-11-26. Each paper compares runs with and without skills. Their scores measure different things.
 
-![Published pass rates with and without a skill. Hard tasks rise from 33.9 percent to 50.5 percent. Public software skills stay at 76.59 percent and 76.93 percent.](docs/benchmarks/skill-pass-rates.svg)
+![Two published paired results, shown separately because their measures differ. SkillsBench task pass rate rises from 33.9% to 50.5%. SWE-Skills-Bench average share of checks passed moves from 76.59% to 76.93%. These are published results, not runs of this repository.](docs/benchmarks/skill-pass-rates.svg)
 
-| Study | Without a skill | With a skill | What the paper reports |
-| --- | --- | --- | --- |
-| [SkillsBench](https://arxiv.org/abs/2602.12670), 87 hard tasks, 18 setups | 33.9% | 50.5% | Average lift of 16.6 points. By setup the lift runs from 4.1 to 25.7 points. 13 of 87 tasks got worse. |
-| [SWE-Skills-Bench](https://arxiv.org/abs/2603.15401), 98 public software skills | 76.59% | 76.93% | 92 of 98 skills had no detectable effect. Four helped. Two hurt. |
+[SkillsBench](https://arxiv.org/abs/2602.12670) evaluates 87 tasks across 18 model and harness setups. Curated skills raise the average task pass rate from **33.9% to 50.5%**, a gain of 16.6 percentage points. The gain by setup runs from 4.1 to 25.7 points. Thirteen tasks get worse.
 
-SkillsBench also reports that more skills are not a larger lift: one skill gained 18.0 points, two or three gained 19.0, and four or more gained 10.1. Compact and standard-length skills gained about 19 to 21.5 points. Comprehensive documentation gained 0.7.
+[SWE-Skills-Bench](https://arxiv.org/abs/2603.15401) evaluates 98 public software skills, each on ten repository requirements under four setups. The average share of executable checks passed moves from **76.59% to 76.93%**. Each requirement contributes equally to that average. Ninety-two skills have no statistically detectable effect under the paper's test; four help and two hurt. No detected effect does not mean a proved zero effect.
 
-The third reference for how a skill is loaded, not for these pass rates, is the [Agent Skills specification](https://agentskills.io/specification). The agent sees `name` and `description` before it opens the file.
+The samples and loading routes differ too. SkillsBench filters out tasks with no measurable separation between conditions and leaves skill discovery to the agent. SWE-Skills-Bench derives requirements from each skill and invokes it explicitly. The difference between their averages does not isolate the effect of curation or task difficulty.
 
-How to measure one skill, and when to delete it, is [docs/skill-quality.md](docs/skill-quality.md). A skill that holds the answer to one task is not a measurement. A skill that is too heavy, that replaces a stronger default, or that points at a tool the agent cannot debug, is a skill to fix or remove.
+SkillsBench also groups results by skill count and document length. Smaller bundles and shorter documents show larger average gains, but those groups contain different tasks. The comprehensive-documentation group has only five tasks. These comparisons are a reason to test a shorter procedure, not proof that cutting lines will improve one.
 
-This repo's own acceptance table stays empty until a real run fills [docs/acceptance-results.md](docs/acceptance-results.md).
+The [Agent Skills specification](https://agentskills.io/specification) describes the loading order: `name` and `description` first, the body when activated, then resources as needed. A valid file, a skill that loads, and a skill that helps are separate checks.
+
+To measure one skill, use [docs/skill-quality.md](docs/skill-quality.md) and record real evidence in [templates/skill-quality-check.md](templates/skill-quality-check.md). Use repeated paired runs with the same tasks, checks, agent, and starting state. Keep required checks, including ones both runs pass. Keep the skill when the declared quality or efficiency benefit repeats, required behavior does not regress, and the tokens and time fit the cost you accepted. A file that contains one task's answer cannot establish reusable value.
+
+The measurement record stays empty until those runs exist. This repo's separate configuration acceptance record is [docs/acceptance-results.md](docs/acceptance-results.md); published benchmark averages fill neither record.
 
 ## What's in this repo
 
