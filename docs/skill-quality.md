@@ -8,7 +8,7 @@ A finished `SKILL.md` is not a measured skill. Keep one for a tested use when th
 
 Copy [the blank record](../templates/skill-quality-check.md) into the product repo after the [skill trigger](repo-config-checklist.md#optional) fires. Fill it from checks you ran. This repository contains no installed skill and no measured skill result. A blank cell is not a pass.
 
-Published results explain why the comparison matters. [SkillsBench](https://arxiv.org/abs/2602.12670) reports an average task pass rate of 33.9% without curated skills and 50.5% with them across 87 tasks and 18 model-harness setups. [SWE-Skills-Bench](https://arxiv.org/abs/2603.15401) finds no statistically detectable effect for 92 of 98 public software skills; its average share of executable checks passed moves from 76.59% to 76.93%. These are different units, task sets, and invocation methods. Neither average grades your skill. The [README chart](../README.md#published-skill-benchmarks) shows published evidence, not experiments run by this repository.
+Published results explain why the comparison matters. [SkillsBench](https://arxiv.org/html/2602.12670v4) reports an average task pass rate of 33.9% without curated skills and 50.5% with them across 87 tasks and 18 model-harness setups. [SWE-Skills-Bench](https://arxiv.org/html/2603.15401v2) finds no statistically detectable effect for 92 of 98 public software skills; its average share of executable checks passed moves from 76.59% to 76.93%. These are different units, task sets, and invocation methods. Neither average grades your skill. The [README chart](../README.md#published-skill-benchmarks) shows published evidence, not experiments run by this repository.
 
 ```mermaid
 flowchart TB
@@ -98,6 +98,6 @@ A blank result is unmeasured, never a silent pass. Remove the layer when its tri
 
 Checked on 2026-11-26. Supporting guides are linked at the steps they inform.
 
-1. [SkillsBench](https://arxiv.org/abs/2602.12670) — paired task pass rates with curated skills.
-2. [SWE-Skills-Bench](https://arxiv.org/abs/2603.15401) — skill-level effects and executable-check pass ratios.
+1. [SkillsBench](https://arxiv.org/html/2602.12670v4) — paired task pass rates with curated skills.
+2. [SWE-Skills-Bench](https://arxiv.org/html/2603.15401v2) — skill-level effects and executable-check pass ratios.
 3. [Agent Skills specification](https://agentskills.io/specification) — format, progressive loading, and recommended structure.
