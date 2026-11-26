@@ -104,7 +104,7 @@ Every layer costs attention and rots when the procedure or API changes. Add one 
 
 Copy [templates/skill/SKILL.md](../templates/skill/SKILL.md). Frontmatter is `name` (1 to 64 characters, lowercase letters, numbers, and hyphens, no leading, trailing, or doubled hyphen, same as the folder) and `description` (1 to 1024 characters, what it does and when to use it). The agent loads the description before it opens the file. The body stays short and points at scripts or reference files. A domain skill names the environment, the verify command, and the refusals: data names the environment and which migration commands are refused, software names module boundaries and the package test, an application names where flows live and how to run, and UI names the states, keyboard, and layout checks.
 
-Measure the skill with [skill-quality.md](skill-quality.md) before you keep it. Copy [templates/skill-quality-check.md](../templates/skill-quality-check.md) and fill it from real runs. Do not invent a row. A with-skill run that does not beat the no-skill run means you fix the skill or delete it.
+Measure the skill with [skill-quality.md](skill-quality.md) before you keep it. Copy [templates/skill-quality-check.md](../templates/skill-quality-check.md) and fill it from real runs. Do not invent a row. A with-skill run that does not beat the no-skill run means you fix the skill or delete it. Do not put the answer to one task in the skill. If the path is too heavy, replaces a stronger default, or points at a tool the agent cannot debug, the skill is the thing to fix.
 
 ```sh
 mkdir -p .claude/skills

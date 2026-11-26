@@ -92,6 +92,25 @@ flowchart TB
 
 Blue is the mandatory set. Amber is the check, red is rework, and green is done. The dashed line runs only after a trigger fires, and that layer is tested again.
 
+## Published skill benchmarks
+
+This repository did not run these studies. The chart copies their published pass rates, checked on 2026-11-26. A skill in a product repo is judged the same way: the same task, once with the skill and once without it.
+
+![Published pass rates with and without a skill. Hard tasks rise from 33.9 percent to 50.5 percent. Public software skills stay at 76.59 percent and 76.93 percent.](docs/benchmarks/skill-pass-rates.svg)
+
+| Study | Without a skill | With a skill | What the paper reports |
+| --- | --- | --- | --- |
+| [SkillsBench](https://arxiv.org/abs/2602.12670), 87 hard tasks, 18 setups | 33.9% | 50.5% | Average lift of 16.6 points. By setup the lift runs from 4.1 to 25.7 points. 13 of 87 tasks got worse. |
+| [SWE-Skills-Bench](https://arxiv.org/abs/2603.15401), 98 public software skills | 76.59% | 76.93% | 92 of 98 skills had no detectable effect. Four helped. Two hurt. |
+
+SkillsBench also reports that more skills are not a larger lift: one skill gained 18.0 points, two or three gained 19.0, and four or more gained 10.1. Compact and standard-length skills gained about 19 to 21.5 points. Comprehensive documentation gained 0.7.
+
+The third reference for how a skill is loaded, not for these pass rates, is the [Agent Skills specification](https://agentskills.io/specification). The agent sees `name` and `description` before it opens the file.
+
+How to measure one skill, and when to delete it, is [docs/skill-quality.md](docs/skill-quality.md). A skill that holds the answer to one task is not a measurement. A skill that is too heavy, that replaces a stronger default, or that points at a tool the agent cannot debug, is a skill to fix or remove.
+
+This repo's own acceptance table stays empty until a real run fills [docs/acceptance-results.md](docs/acceptance-results.md).
+
 ## What's in this repo
 
 | Path | Use it to |
