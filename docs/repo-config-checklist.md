@@ -85,7 +85,7 @@ Every layer costs attention and rots when the procedure or API changes. Add one 
 
 | Layer | Trigger to add | Leave it out when |
 | --- | --- | --- |
-| Skill | The same procedure has been re-explained twice (review, release, migration, UI check) | The task is one-off |
+| Skill | The same procedure has been re-explained twice (review, release, migration, UI check) | The task is one-off, or a with-skill run does not beat the no-skill run |
 | Domain skill | Data, software, application, or UI/UX steps repeat | The domain note is a one-line command: put that line in `AGENTS.md` |
 | MCP server | A documented CLI would make the agent guess flags or output shape, or a secret would otherwise be read into context | A documented command already does the job |
 | Path-scoped rules | A rule applies only to some paths (UI, data, generated code) | The rule applies to the whole repo: it belongs in `AGENTS.md` |
@@ -102,7 +102,9 @@ Every layer costs attention and rots when the procedure or API changes. Add one 
 | Nested `AGENTS.md` | Cursor and Codex read it. Copilot reads nested files along the path from the repo root to the files it works on. `chat.useNestedAgentsMdFiles` is experimental, off by default, and applies to the deprecated Local harness. Claude Code reads a nested `AGENTS.md` when that directory and its parents have no `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md`. Otherwise put `@AGENTS.md` in a `CLAUDE.md` beside it. |
 | Hook or deny-list | Claude Code: `permissions.deny` and `PreToolUse` in `.claude/settings.json`. Cursor: `beforeShellExecution` in `.cursor/hooks.json`. VS Code / Copilot: `preToolUse` in `.github/hooks/*.json` (Preview). `PreToolUse` is a compatible alias with a different payload. Codex: `.codex/hooks.json`, or `.codex/rules/*.rules` (experimental), and only when the project is trusted. Gemini CLI: `~/.gemini/policies/*.toml`. A project `.gemini/policies` directory has no effect. |
 
-Copy [templates/skill/SKILL.md](../templates/skill/SKILL.md). Frontmatter is `name` (lowercase, hyphens, matches the folder) and `description` (what it does and when to use it). The body stays short and points at scripts or reference files. A domain skill names the environment, the verify command, and the refusals: data names the environment and which migration commands are refused, software names module boundaries and the package test, an application names where flows live and how to run, and UI names the states, keyboard, and layout checks.
+Copy [templates/skill/SKILL.md](../templates/skill/SKILL.md). Frontmatter is `name` (1 to 64 characters, lowercase letters, numbers, and hyphens, no leading, trailing, or doubled hyphen, same as the folder) and `description` (1 to 1024 characters, what it does and when to use it). The agent loads the description before it opens the file. The body stays short and points at scripts or reference files. A domain skill names the environment, the verify command, and the refusals: data names the environment and which migration commands are refused, software names module boundaries and the package test, an application names where flows live and how to run, and UI names the states, keyboard, and layout checks.
+
+Measure the skill with [skill-quality.md](skill-quality.md) before you keep it. Copy [templates/skill-quality-check.md](../templates/skill-quality-check.md) and fill it from real runs. Do not invent a row. A with-skill run that does not beat the no-skill run means you fix the skill or delete it.
 
 ```sh
 mkdir -p .claude/skills
@@ -128,6 +130,7 @@ Vendor paths were checked against official docs on 2026-11-26. Vendors move them
 - Codex: [AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [rules](https://learn.chatgpt.com/docs/agent-configuration/rules), [hooks](https://learn.chatgpt.com/docs/hooks), [config](https://learn.chatgpt.com/docs/config-file/config-basic), [skills](https://learn.chatgpt.com/docs/build-skills)
 - Gemini CLI: [GEMINI.md](https://geminicli.com/docs/cli/gemini-md/), [configuration](https://geminicli.com/docs/reference/configuration/), [MCP](https://geminicli.com/docs/tools/mcp-server/), [policy engine](https://geminicli.com/docs/reference/policy-engine/), [skills](https://geminicli.com/docs/cli/using-agent-skills/)
 - [Agent Skills spec](https://agentskills.io/specification): portable `SKILL.md`
+- Skill quality: [trigger runs](https://agentskills.io/skill-creation/optimizing-descriptions), [output runs](https://agentskills.io/skill-creation/evaluating-skills), and [how this repo measures a skill](skill-quality.md)
 - [OWASP Secure Coding with AI](https://cheatsheetseries.owasp.org/cheatsheets/Secure_Coding_with_AI_Cheat_Sheet.html): agents and MCP as an attack surface
 
 Design notes: [AI coding agents compared (Eazler, Oct 2026)](https://blog.eazler.com/en/ai-coding-agents-landscape), [Capability matrix 2026](https://baeseokjae.github.io/posts/ai-coding-agent-capability-matrix-2026/), [AGENTS.md vs skills vs MCP vs CLI](https://balazscsorba.com/blog/agents-md-skills-mcp-cli-decision-matrix).
